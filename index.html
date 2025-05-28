@@ -1,76 +1,52 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <title>Mapa Chile RP - Leaflet</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
-  <style>
-    html, body {
-      margin: 0; padding: 0; height: 100%;
-      display: flex; justify-content: center; align-items: center;
-      background: #111;
-    }
+<style>
+  .leaflet-control-custom {
+    background-color: white;
+    border: none;
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0,0,0,0.4);
+    margin-bottom: 5px;
+  }
+</style>
 
-    #map {
-      width: 800px;
-      height: 600px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.7);
-      border: 2px solid #444;
-    }
+<script>
+  let showingCuarteles = false;
 
-    .leaflet-control-layers {
-      background: #222 !important;
-      color: white;
-      border: 1px solid #555;
-    }
+  const switchMapControl = L.Control.extend({
+    onAdd: function () {
+      const btn = L.DomUtil.create('button', 'leaflet-control-custom');
+      btn.innerHTML = 'Cuarteles 🚒';
+      btn.title = "Mostrar/Ocultar Cuarteles y Bomberos";
 
-    .leaflet-control-layers label {
-      color: white !important;
-    }
-  </style>
-</head>
-<body>
-  <div id="map"></div>
+      L.DomEvent.on(btn, 'click', function (e) {
+        L.DomEvent.stopPropagation(e);
+        L.DomEvent.preventDefault(e);
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script>
-    const mapWidth = 4000;  // cambia esto por el ancho real de tus imágenes
-    const mapHeight = 3000; // cambia esto por el alto real
+        if (showingCuarteles) {
+          map.removeLayer(cuartelesMap);
+          baseMap.addTo(map);
+        } else {
+          map.removeLayer(baseMap);
+          cuartelesMap.addTo(map);
+        }
 
-    const bounds = [[0, 0], [mapHeight, mapWidth]];
+        showingCuarteles = !showingCuarteles;
+      });
 
-    const map = L.map('map', {
-      crs: L.CRS.Simple,
-      minZoom: -2,
-      maxZoom: 2,
-      zoomSnap: 0.1,
-      zoomControl: true,
-      attributionControl: false,
-    });
+      return btn;
+    },
 
-    const baseMap = L.imageOverlay('mapa.png', bounds);
-    const cuartelesMap = L.imageOverlay('mapa_cuarteles.png', bounds);
+    onRemove: function () {}
+  });
 
-    // Agregar capa base por defecto
-    baseMap.addTo(map);
+  L.control.switchMap = function(opts) {
+    return new switchMapControl(opts);
+  }
 
-    // Crear el control de capas
-    const overlays = {
-      "Cuarteles y Bomberos": cuartelesMap
-    };
-
-    L.control.layers(null, overlays, { collapsed: false }).addTo(map);
-
-    map.fitBounds(bounds);
-    map.setMaxBounds(bounds);
-  </script>
-</body>
-</html>
+  L.control.switchMap({ position: 'topleft' }).addTo(map);
+</script>
 
 
 
