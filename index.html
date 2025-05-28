@@ -90,17 +90,21 @@
       offset.y = Math.min(maxY, Math.max(minY, offset.y));
     }
 
-    mapa.addEventListener("mousedown", (e) => {
+    // Detectar cuando presionas el botón izquierdo del mouse sobre el visor
+    visor.addEventListener("mousedown", (e) => {
+      if (e.button !== 0) return; // solo botón izquierdo
       isDragging = true;
       startPos = { x: e.clientX - offset.x, y: e.clientY - offset.y };
       mapa.style.cursor = "grabbing";
     });
 
+    // Cuando sueltas el mouse
     window.addEventListener("mouseup", () => {
       isDragging = false;
       mapa.style.cursor = "grab";
     });
 
+    // Mientras mueves el mouse con el botón presionado
     window.addEventListener("mousemove", (e) => {
       if (!isDragging) return;
       offset.x = e.clientX - startPos.x;
@@ -129,7 +133,7 @@
       updateTransform();
     });
 
-    // Esperar a que la imagen cargue completamente
+    // Cuando se carga la imagen, centrarla al inicio
     mapa.addEventListener("load", () => {
       offset.x = (visor.clientWidth - mapa.naturalWidth * scale) / 2;
       offset.y = (visor.clientHeight - mapa.naturalHeight * scale) / 2;
