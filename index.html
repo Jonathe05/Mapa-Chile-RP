@@ -1,26 +1,73 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Mapa Chile RP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
+    html, body {
       margin: 0;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      background-color: #000;
     }
-    img {
-      max-width: 100%;
-      height: auto;
+    #container {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      cursor: grab;
+    }
+    #container:active {
+      cursor: grabbing;
+    }
+    #mapa {
+      transform-origin: top left;
+      transition: transform 0.1s ease-out;
     }
   </style>
 </head>
 <body>
-  <img src="mapa.png" alt="Mapa Chile RP" />
+  <div id="container">
+    <img id="mapa" src="mapa.png" alt="Mapa Chile RP">
+  </div>
+
+  <script>
+    const mapa = document.getElementById('mapa');
+    const container = document.getElementById('container');
+
+    let scale = 1;
+    let pos = { x: 0, y: 0 };
+    let isDragging = false;
+    let start = { x: 0, y: 0 };
+
+    function updateTransform() {
+      mapa.style.transform = `translate(${pos.x}px, ${pos.y}px) scale(${scale})`;
+    }
+
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      scale = Math.min(Math.max(0.2, scale + delta), 5);
+      updateTransform();
+    });
+
+    container.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      start = { x: e.clientX - pos.x, y: e.clientY - pos.y };
+    });
+
+    container.addEventListener('mouseup', () => isDragging = false);
+    container.addEventListener('mouseleave', () => isDragging = false);
+
+    container.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      pos.x = e.clientX - start.x;
+      pos.y = e.clientY - start.y;
+      updateTransform();
+    });
+
+    updateTransform();
+  </script>
 </body>
 </html>
-
