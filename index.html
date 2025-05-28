@@ -28,15 +28,15 @@
 
     #mapa {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(1);
-      transform-origin: center center;
-      transition: transform 0.1s ease-out;
+      top: 0;
+      left: 0;
+      transform: scale(1);
+      transform-origin: top left;
       user-drag: none;
       user-select: none;
       max-width: none;
       max-height: none;
+      cursor: grab;
     }
 
     .zoom-controls {
@@ -46,6 +46,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      z-index: 10;
     }
 
     .zoom-controls button {
@@ -70,29 +71,69 @@
 
   <script>
     const mapa = document.getElementById("mapa");
+    const visor = document.getElementById("visor");
+
     let scale = 1;
+    let pos = { x: 0, y: 0 };
+    let isDragging = false;
+    let start = { x: 0, y: 0 };
 
     function updateTransform() {
-      mapa.style.transform = `translate(-50%, -50%) scale(${scale})`;
+      mapa.style.transform = `translate(${pos.x}px, ${pos.y}px) scale(${scale})`;
     }
+
+    mapa.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      start.x = e.clientX - pos.x;
+      start.y = e.clientY - pos.y;
+      mapa.style.cursor = "grabbing";
+    });
+
+    document.addEventListener("mouseup", () => {
+      isDragging = false;
+      mapa.style.cursor = "grab";
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
+      pos.x = e.clientX - start.x;
+      pos.y = e.clientY - start.y;
+      limitMovement();
+      updateTransform();
+    });
 
     function zoomIn() {
       scale = Math.min(scale + 0.1, 3);
+      limitMovement();
       updateTransform();
     }
 
     function zoomOut() {
       scale = Math.max(scale - 0.1, 0.2);
+      limitMovement();
       updateTransform();
     }
 
     document.addEventListener("wheel", (e) => {
-      if (!mapa) return;
       e.preventDefault();
       const delta = e.deltaY > 0 ? -0.1 : 0.1;
       scale = Math.min(Math.max(0.2, scale + delta), 3);
+      limitMovement();
       updateTransform();
     });
+
+    function limitMovement() {
+      const mapaRect = mapa.getBoundingClientRect();
+      const visorRect = visor.getBoundingClientRect();
+
+      const maxX = 0;
+      const maxY = 0;
+      const minX = visorRect.width - mapa.width * scale;
+      const minY = visorRect.height - mapa.height * scale;
+
+      pos.x = Math.min(maxX, Math.max(minX, pos.x));
+      pos.y = Math.min(maxY, Math.max(minY, pos.y));
+    }
 
     updateTransform();
   </script>
