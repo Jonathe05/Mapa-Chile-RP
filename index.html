@@ -17,11 +17,11 @@
     }
 
     #map {
-      width: 558.2px;
-      height: 500.5px;
+      width: 900px;         /* ancho más grande */
+      height: 800px;        /* alto más grande */
       border-radius: 10px;
       box-shadow: 0 0 20px rgba(0,0,0,0.7);
-      border: 2px solid #444;
+      border: none;         /* sin borde */
       position: relative;
     }
 
@@ -47,8 +47,9 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    const mapWidth = 558.2;
-    const mapHeight = 500.5;
+    // Cambia aquí al tamaño real de tu imagen si no es 900x800
+    const mapWidth = 900;
+    const mapHeight = 800;
     const bounds = [[0, 0], [mapHeight, mapWidth]];
 
     const map = L.map('map', {
@@ -63,12 +64,11 @@
     const image = L.imageOverlay('mapa.png.png', bounds).addTo(map);
     const cuarteles = L.imageOverlay('mapa_cuarteles.png.png', bounds);
 
-    // Calcula el nivel mínimo de zoom que llena el visor sin espacios negros
-    const container = document.getElementById('map');
+    // Ajustamos el zoom mínimo para que la imagen encaje perfecto
     const minZoom = map.getBoundsZoom(bounds, false);
 
     map.setMinZoom(minZoom);
-    map.setMaxZoom(minZoom + 2); // permite acercarse pero no alejarse de más
+    map.setMaxZoom(minZoom + 2);
     map.fitBounds(bounds);
 
     const overlays = {
@@ -79,3 +79,4 @@
   </script>
 </body>
 </html>
+
