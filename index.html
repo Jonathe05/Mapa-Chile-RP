@@ -1,88 +1,60 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Mapa Chile RP</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background: #111;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    #map {
-      width: 800px;
-      height: 600px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.7);
-      border: 2px solid #444;
-    }
-
-    .leaflet-control-custom {
-      background-color: white;
-      border: 2px solid #888;
-      padding: 5px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      box-shadow: 0 0 5px rgba(0,0,0,0.3);
-      margin-bottom: 5px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>Mapa Chile RP - Leaflet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- CSS de Leaflet -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<style>
+  body, html {
+    margin: 0; padding: 0; height: 100%;
+    display: flex; justify-content: center; align-items: center;
+    background: #111;
+  }
+  #map {
+    width: 800px;
+    height: 600px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.7);
+    border: 2px solid #444;
+  }
+</style>
 </head>
 <body>
   <div id="map"></div>
 
+  <!-- Script de Leaflet -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // Usa el tamaño real de tu imagen (ajústalo si cambia)
-    const mapWidth = 4096; // ancho en pixeles de mapa.png
-    const mapHeight = 4096; // alto en pixeles de mapa.png
+    // Dimensiones reales de tu imagen (modificalas según el tamaño original del mapa)
+    const mapWidth = 4000;  // ejemplo: ancho en pixeles de tu mapa
+    const mapHeight = 3000; // ejemplo: alto en pixeles de tu mapa
 
-    const bounds = [[0, 0], [mapHeight, mapWidth]];
-
+    // Crear mapa con coordenadas simples para el "mapa plano"
     const map = L.map('map', {
       crs: L.CRS.Simple,
       minZoom: -2,
       maxZoom: 2,
       zoomSnap: 0.1,
-      zoomDelta: 0.1,
-      attributionControl: false,
       zoomControl: true,
-      maxBounds: bounds
+      attributionControl: false,
     });
 
-    // Capas de imagen
-    const baseMap = L.imageOverlay('mapa.png', bounds);
-    const cuartelesMap = L.imageOverlay('mapa_cuarteles.png', bounds);
+    // Calculamos los límites para el mapa plano
+    const bounds = [[0,0], [mapHeight, mapWidth]];
 
-    // Capa actual
-    let currentLayer = baseMap;
-    currentLayer.addTo(map);
+    // Cargar la imagen como capa
+    const image = L.imageOverlay('mapa.png', bounds).addTo(map);
 
+    // Ajustar la vista para mostrar el mapa completo inicialmente
     map.fitBounds(bounds);
 
-    // Botón personalizado para cambiar de mapa
-    const switchControl = L.control({ position: 'topleft' });
-
-    switchControl.onAdd = function () {
-      const div = L.DomUtil.create('div', 'leaflet-control-custom');
-      div.innerHTML = 'Cambiar mapa';
-      div.onclick = () => {
-        map.removeLayer(currentLayer);
-        currentLayer = (currentLayer === baseMap) ? cuartelesMap : baseMap;
-        currentLayer.addTo(map);
-      };
-      return div;
-    };
-
-    switchControl.addTo(map);
+    // Opcional: bloquear zoom máximo/mínimo y movimientos fuera de los límites
+    map.setMaxBounds(bounds);
   </script>
 </body>
 </html>
