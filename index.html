@@ -25,9 +25,10 @@
       position: relative;
     }
 
+    /* Posición correcta de los controles */
     .leaflet-top.leaflet-left {
-      top: 20px !important;
-      left: 20px !important;
+      top: 10px !important;
+      left: 10px !important;
     }
 
     .leaflet-control-layers {
@@ -48,32 +49,33 @@
   <script>
     const mapWidth = 558.2;
     const mapHeight = 500.5;
-
     const bounds = [[0, 0], [mapHeight, mapWidth]];
 
     const map = L.map('map', {
       crs: L.CRS.Simple,
-      minZoom: 0, // no permite alejar más allá del tamaño de la imagen
-      maxZoom: 2,
-      zoomSnap: 0.1,
       zoomControl: true,
       attributionControl: false,
       maxBounds: bounds,
       maxBoundsViscosity: 1.0,
+      zoomSnap: 0.1
     });
 
-    const baseMap = L.imageOverlay('mapa.png.png', bounds);
-    const cuartelesMap = L.imageOverlay('mapa_cuarteles.png.png', bounds);
+    const image = L.imageOverlay('mapa.png.png', bounds).addTo(map);
+    const cuarteles = L.imageOverlay('mapa_cuarteles.png.png', bounds);
 
-    baseMap.addTo(map);
+    // Calcula el nivel mínimo de zoom que llena el visor sin espacios negros
+    const container = document.getElementById('map');
+    const minZoom = map.getBoundsZoom(bounds, false);
+
+    map.setMinZoom(minZoom);
+    map.setMaxZoom(minZoom + 2); // permite acercarse pero no alejarse de más
+    map.fitBounds(bounds);
 
     const overlays = {
-      "Cuarteles y Bomberos": cuartelesMap
+      "Cuarteles y Bomberos": cuarteles
     };
 
     L.control.layers(null, overlays, { collapsed: false }).addTo(map);
-
-    map.fitBounds(bounds);
   </script>
 </body>
 </html>
