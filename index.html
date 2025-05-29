@@ -38,20 +38,28 @@
       max-height: none;
     }
 
-    .zoom-controls {
+    .zoom-controls, .toggle-controls {
       position: absolute;
-      bottom: 15px;
-      right: 15px;
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
-    .zoom-controls button {
+    .zoom-controls {
+      bottom: 15px;
+      right: 15px;
+    }
+
+    .toggle-controls {
+      bottom: 15px;
+      left: 15px;
+    }
+
+    button {
       background-color: #fff;
       border: none;
       padding: 10px;
-      font-size: 20px;
+      font-size: 16px;
       border-radius: 5px;
       cursor: pointer;
       box-shadow: 0 0 5px rgba(0,0,0,0.5);
@@ -65,6 +73,9 @@
       <button onclick="zoomIn()">＋</button>
       <button onclick="zoomOut()">－</button>
     </div>
+    <div class="toggle-controls">
+      <button onclick="toggleMapa()">🗺️ Cambiar mapa</button>
+    </div>
   </div>
 
   <script>
@@ -74,9 +85,10 @@
     let scale = 1;
     let translateX = 0;
     let translateY = 0;
-
     let isDragging = false;
     let startX, startY;
+
+    let usandoMapaBase = true;
 
     function updateTransform() {
       mapa.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
@@ -90,6 +102,11 @@
     function zoomOut() {
       scale = Math.max(scale - 0.1, 0.3);
       updateTransform();
+    }
+
+    function toggleMapa() {
+      usandoMapaBase = !usandoMapaBase;
+      mapa.src = usandoMapaBase ? "mapa.png" : "mapa_cuarteles.png";
     }
 
     visor.addEventListener("mousedown", (e) => {
