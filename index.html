@@ -1,40 +1,48 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<title>Mapa Chile RP - Leaflet</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<!-- CSS de Leaflet -->
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
-<style>
-  body, html {
-    margin: 0; padding: 0; height: 100%;
-    display: flex; justify-content: center; align-items: center;
-    background: #111;
-  }
-  #map {
-    width: 800px;
-    height: 600px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.7);
-    border: 2px solid #444;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <title>Mapa Chile RP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      background: #111;
+      display: flex; justify-content: center; align-items: center;
+    }
+
+    #map {
+      width: 800px;
+      height: 600px;
+      border-radius: 10px;
+      border: 2px solid #444;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    }
+
+    .leaflet-control-layers {
+      background-color: #222 !important;
+      color: white !important;
+    }
+
+    .leaflet-control-layers label {
+      color: white !important;
+    }
+  </style>
 </head>
 <body>
   <div id="map"></div>
 
-  <!-- Script de Leaflet -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // Dimensiones reales de tu imagen (modificalas según el tamaño original del mapa)
-    const mapWidth = 4000;  // ejemplo: ancho en pixeles de tu mapa
-    const mapHeight = 3000; // ejemplo: alto en pixeles de tu mapa
+    const mapWidth = 4000;  // pon el ancho real de tu imagen
+    const mapHeight = 3000; // pon el alto real
 
-    // Crear mapa con coordenadas simples para el "mapa plano"
+    const bounds = [[0, 0], [mapHeight, mapWidth]];
+
     const map = L.map('map', {
       crs: L.CRS.Simple,
       minZoom: -2,
@@ -44,17 +52,20 @@
       attributionControl: false,
     });
 
-    // Calculamos los límites para el mapa plano
-    const bounds = [[0,0], [mapHeight, mapWidth]];
+    const baseMap = L.imageOverlay('mapa.png', bounds);
+    const cuartelesMap = L.imageOverlay('mapa_cuarteles.png', bounds);
 
-    // Cargar la imagen como capa
-    const image = L.imageOverlay('mapa.png', bounds).addTo(map);
+    baseMap.addTo(map);
 
-    // Ajustar la vista para mostrar el mapa completo inicialmente
+    const overlays = {
+      "Cuarteles y Bomberos": cuartelesMap
+    };
+
+    L.control.layers(null, overlays, { collapsed: false }).addTo(map);
+
     map.fitBounds(bounds);
-
-    // Opcional: bloquear zoom máximo/mínimo y movimientos fuera de los límites
     map.setMaxBounds(bounds);
   </script>
 </body>
 </html>
+
