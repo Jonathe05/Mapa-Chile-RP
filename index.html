@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Mapa Chile RP - Leaflet</title>
+  <title>Mapa Chile RP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
@@ -10,10 +10,10 @@
       margin: 0;
       padding: 0;
       height: 100%;
+      background: #111;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #111;
     }
 
     #map {
@@ -33,10 +33,6 @@
       font-weight: bold;
       box-shadow: 0 0 5px rgba(0,0,0,0.3);
     }
-
-    .leaflet-top.leaflet-left {
-      top: 70px !important;
-    }
   </style>
 </head>
 <body>
@@ -44,9 +40,9 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // ⛔ Usa tus dimensiones reales aquí
-    const mapWidth = 5020;   // ← reemplaza esto
-    const mapHeight = 3540;  // ← reemplaza esto
+    // ⚠️ Usa las dimensiones REALES de tu imagen mapa.png
+    const mapWidth = 4000;  // ← reemplaza con tu ancho real
+    const mapHeight = 3000; // ← reemplaza con tu alto real
 
     const bounds = [[0, 0], [mapHeight, mapWidth]];
 
@@ -65,10 +61,9 @@
 
     let currentLayer = baseMap;
     currentLayer.addTo(map);
-
     map.fitBounds(bounds);
 
-    // Botón para cambiar entre mapas
+    // Botón para cambiar de mapa
     const switchControl = L.control({ position: 'topleft' });
 
     switchControl.onAdd = function () {
