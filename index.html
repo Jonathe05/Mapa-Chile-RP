@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mapa Chile RP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      display: flex; justify-content: center; align-items: center;
+      background: #111;
+    }
+
+    #map {
+      width: 800px;
+      height: 600px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
+      border: 2px solid #444;
+    }
+
+    .leaflet-control-layers {
+      background: #222 !important;
+      color: white;
+      border: 1px solid #555;
+    }
+
+    .leaflet-control-layers label {
+      color: white !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const mapWidth = 4000;  // Ajusta al tamaño real de tus imágenes
+    const mapHeight = 3000;
+
+    const bounds = [[0, 0], [mapHeight, mapWidth]];
+
+    const map = L.map('map', {
+      crs: L.CRS.Simple,
+      minZoom: -2,
+      maxZoom: 2,
+      zoomSnap: 0.1,
+      zoomControl: true,
+      attributionControl: false,
+    });
+
+    const baseMap = L.imageOverlay('mapa.png.png', bounds);
+    const cuartelesMap = L.imageOverlay('mapa_cuarteles.png.png', bounds);
+
+    baseMap.addTo(map);
+
+    const overlays = {
+      "Cuarteles y Bomberos": cuartelesMap
+    };
+
+    L.control.layers(null, overlays, { collapsed: false }).addTo(map);
+
+    map.fitBounds(bounds);
+    map.setMaxBounds(bounds);
+  </script>
+</body>
+</html>
