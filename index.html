@@ -35,7 +35,7 @@
     }
 
     .leaflet-top.leaflet-left {
-      top: 70px !important; /* separa del botón de zoom */
+      top: 70px !important;
     }
   </style>
 </head>
@@ -44,8 +44,10 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    const mapWidth = 4000; // ancho real de tus imágenes
-    const mapHeight = 3000; // alto real
+    // ⛔ Usa tus dimensiones reales aquí
+    const mapWidth = 5020;   // ← reemplaza esto
+    const mapHeight = 3540;  // ← reemplaza esto
+
     const bounds = [[0, 0], [mapHeight, mapWidth]];
 
     const map = L.map('map', {
@@ -66,7 +68,7 @@
 
     map.fitBounds(bounds);
 
-    // Botón personalizado para cambiar de mapa
+    // Botón para cambiar entre mapas
     const switchControl = L.control({ position: 'topleft' });
 
     switchControl.onAdd = function () {
@@ -84,3 +86,4 @@
   </script>
 </body>
 </html>
+
