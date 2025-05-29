@@ -32,6 +32,7 @@
       cursor: pointer;
       font-weight: bold;
       box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      margin-bottom: 5px;
     }
   </style>
 </head>
@@ -40,9 +41,9 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // ⚠️ Usa las dimensiones REALES de tu imagen mapa.png
-    const mapWidth = 4000;  // ← reemplaza con tu ancho real
-    const mapHeight = 3000; // ← reemplaza con tu alto real
+    // Usa el tamaño real de tu imagen (ajústalo si cambia)
+    const mapWidth = 4096; // ancho en pixeles de mapa.png
+    const mapHeight = 4096; // alto en pixeles de mapa.png
 
     const bounds = [[0, 0], [mapHeight, mapWidth]];
 
@@ -51,24 +52,28 @@
       minZoom: -2,
       maxZoom: 2,
       zoomSnap: 0.1,
-      zoomControl: true,
+      zoomDelta: 0.1,
       attributionControl: false,
+      zoomControl: true,
       maxBounds: bounds
     });
 
+    // Capas de imagen
     const baseMap = L.imageOverlay('mapa.png', bounds);
     const cuartelesMap = L.imageOverlay('mapa_cuarteles.png', bounds);
 
+    // Capa actual
     let currentLayer = baseMap;
     currentLayer.addTo(map);
+
     map.fitBounds(bounds);
 
-    // Botón para cambiar de mapa
+    // Botón personalizado para cambiar de mapa
     const switchControl = L.control({ position: 'topleft' });
 
     switchControl.onAdd = function () {
       const div = L.DomUtil.create('div', 'leaflet-control-custom');
-      div.innerHTML = 'Cambiar Mapa';
+      div.innerHTML = 'Cambiar mapa';
       div.onclick = () => {
         map.removeLayer(currentLayer);
         currentLayer = (currentLayer === baseMap) ? cuartelesMap : baseMap;
@@ -81,4 +86,5 @@
   </script>
 </body>
 </html>
+
 
